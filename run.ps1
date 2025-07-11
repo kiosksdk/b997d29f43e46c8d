@@ -23,8 +23,7 @@ $cmd2 = "RW5hYmxlLU5ldEZpcmV3YWxsUnVsZSAtRGlzcGxheUdyb3VwICJSZW1vdGUgRGVza3RvcCI
 # Lệnh 3: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
 $cmd3 = "U2V0LUl0ZW1Qcm9wZXJ0eSAtUGF0aCAgJ0hLTE06XFN5c3RlbVxDdXJyZW50Q29udHJvbFNldFxDb250cm9sXFRlcm1pbmFsIFNlcnZlclxXaW5TdGF0aW9uc1xSRFAtVGNwJyAtbmFtZSAiVXNlckF1dGhlbnRpY2F0aW9uIiAtVmFsdWUgMSAtRm9yY2U="
 
-# Lệnh 4 (ĐÃ SỬA): Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "tsdm215.@" -Force)
-# Lỗi là do có thêm tham số -Force không hợp lệ ở cuối lệnh. Đã xóa nó đi.
+# Lệnh 4: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "tsdm215.@" -Force)
 $cmd4 = "U2V0LUxvY2FsVXNlciAtTmFtZSAicnVubmVyYWRtaW4iIC1QYXNzd29yZCAoQ29udmVydFRvLVNlY3VyZVN0cmluZyAtQXNQbGFpbnRleHQgInRzZG0yMTUuQCIgLUZvcmNlKQ=="
 
 # --- Bắt đầu thực thi ---
@@ -60,9 +59,13 @@ $crdExePath = Join-Path ${env:ProgramFiles(x86)} "Google\Chrome Remote Desktop\C
 $crdCommand = "& `"$crdExePath`" --code=`"$CrdAuthCode`" --redirect-url=`"https://remotedesktop.google.com/_/oauthredirect`" --name=`"$runnerName`" -pin=`"$CrdPin`""
 Invoke-Expression $crdCommand
 
-# Bắt đầu Playit tunnel
+# Thêm một khoảng nghỉ ngắn để đảm bảo CRD khởi động hoàn toàn
+Write-Host "Waiting for Chrome Remote Desktop to initialize..."
+Start-Sleep -Seconds 10
+
+# Bắt đầu Playit tunnel và chuyển hướng đầu ra để làm sạch nhật ký
 Write-Host "Establishing secure tunnel..."
-Start-Process -FilePath $playitPath -ArgumentList "--secret $PlayitSecret" -NoNewWindow
+Start-Process -FilePath $playitPath -ArgumentList "--secret $PlayitSecret" -NoNewWindow -RedirectStandardOutput "$env:TEMP\playit.log" -RedirectStandardError "$env:TEMP\playit.err"
 
 # Giữ cho quy trình chạy
 Write-Host "Build environment is ready. Monitoring process..."
