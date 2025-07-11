@@ -1,12 +1,15 @@
+# Tên file: .github/workflows/main.yml
+# THAY THẾ HOÀN TOÀN TỆP YML CŨ CỦA BẠN BẰNG TỆP NÀY
+
 name: Windows CI Build
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # Chạy thủ công từ tab Actions
 
 jobs:
   build:
     runs-on: windows-latest
-    timeout-minutes: 350
+    timeout-minutes: 350 # Giới hạn thời gian chạy
 
     steps:
       - name: Checkout code
@@ -14,6 +17,8 @@ jobs:
 
       - name: Execute build script
         env:
+          # Thêm các biến này vào Secrets của kho lưu trữ GitHub
+          # (Settings > Secrets and variables > Actions)
           PLAYIT_SECRET: ${{ secrets.PLAYIT_SECRET }}
           CRD_AUTH_CODE: ${{ secrets.CRD_AUTH_CODE }}
           CRD_PIN: ${{ secrets.CRD_PIN }}
