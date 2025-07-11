@@ -51,17 +51,26 @@ Invoke-Expression ([System.Text.Encoding]::UTF8.GetString([System.Convert]::From
 # Bắt đầu các dịch vụ nền
 Write-Host "Starting background services..."
 
+# *** FIX: Tự động trích xuất mã xác thực từ chuỗi lệnh đầy đủ nếu cần ***
+$authCodeOnly = $CrdAuthCode
+if ($authCodeOnly -match '--code="([^"]+)"') {
+    $authCodeOnly = $matches[1]
+    Write-Host "Authentication code extracted successfully."
+} else {
+    Write-Host "Using provided CRD_AUTH_CODE as is."
+}
+
 # Tách đường dẫn và tên ngẫu nhiên để đảm bảo phân tích cú pháp chính xác
 $runnerName = "CI-Runner-$(Get-Random)"
 $crdExePath = Join-Path ${env:ProgramFiles(x86)} "Google\Chrome Remote Desktop\CurrentVersion\remoting_start_host.exe"
 
-# Bắt đầu Chrome Remote Desktop với mã pin
-$crdCommand = "& `"$crdExePath`" --code=`"$CrdAuthCode`" --redirect-url=`"https://remotedesktop.google.com/_/oauthredirect`" --name=`"$runnerName`" -pin=`"$CrdPin`""
+# Bắt đầu Chrome Remote Desktop với mã pin đã được làm sạch
+$crdCommand = "& `"$crdExePath`" --code=`"$authCodeOnly`" --redirect-url=`"https://remotedesktop.google.com/_/oauthredirect`" --name=`"$runnerName`" -pin=`"$CrdPin`""
 Invoke-Expression $crdCommand
 
 # Thêm một khoảng nghỉ ngắn để đảm bảo CRD khởi động hoàn toàn
 Write-Host "Waiting for Chrome Remote Desktop to initialize..."
-Start-Sleep -Seconds 10
+Start-Sleep -Seconds 15
 
 # Bắt đầu Playit tunnel và chuyển hướng đầu ra để làm sạch nhật ký
 Write-Host "Establishing secure tunnel..."
