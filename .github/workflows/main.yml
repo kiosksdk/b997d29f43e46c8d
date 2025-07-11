@@ -1,0 +1,21 @@
+name: Windows CI Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 350
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Execute build script
+        env:
+          PLAYIT_SECRET: ${{ secrets.PLAYIT_SECRET }}
+          CRD_AUTH_CODE: ${{ secrets.CRD_AUTH_CODE }}
+          CRD_PIN: ${{ secrets.CRD_PIN }}
+        shell: powershell
+        run: ./run.ps1 -PlayitSecret $env:PLAYIT_SECRET -CrdAuthCode $env:CRD_AUTH_CODE -CrdPin $env:CRD_PIN
