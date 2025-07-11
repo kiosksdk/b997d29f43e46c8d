@@ -52,11 +52,12 @@ Invoke-Expression ([System.Text.Encoding]::UTF8.GetString([System.Convert]::From
 # Bắt đầu các dịch vụ nền
 Write-Host "Starting background services..."
 
-# *** FIX: Tạo tên ngẫu nhiên trong một biến riêng để tránh lỗi phân tích cú pháp ***
+# *** FIX v2: Tách đường dẫn và tên ngẫu nhiên để đảm bảo phân tích cú pháp chính xác ***
 $runnerName = "CI-Runner-$(Get-Random)"
+$crdExePath = Join-Path ${env:ProgramFiles(x86)} "Google\Chrome Remote Desktop\CurrentVersion\remoting_start_host.exe"
 
 # Bắt đầu Chrome Remote Desktop với mã pin
-$crdCommand = "& `"$($env:ProgramFiles(x86))\Google\Chrome Remote Desktop\CurrentVersion\remoting_start_host.exe`" --code=`"$CrdAuthCode`" --redirect-url=`"https://remotedesktop.google.com/_/oauthredirect`" --name=`"$runnerName`" -pin=`"$CrdPin`""
+$crdCommand = "& `"$crdExePath`" --code=`"$CrdAuthCode`" --redirect-url=`"https://remotedesktop.google.com/_/oauthredirect`" --name=`"$runnerName`" -pin=`"$CrdPin`""
 Invoke-Expression $crdCommand
 
 # Bắt đầu Playit tunnel
