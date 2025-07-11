@@ -23,9 +23,9 @@ $cmd2 = "RW5hYmxlLU5ldEZpcmV3YWxsUnVsZSAtRGlzcGxheUdyb3VwICJSZW1vdGUgRGVza3RvcCI
 # Lệnh 3: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
 $cmd3 = "U2V0LUl0ZW1Qcm9wZXJ0eSAtUGF0aCAgJ0hLTE06XFN5c3RlbVxDdXJyZW50Q29udHJvbFNldFxDb250cm9sXFRlcm1pbmFsIFNlcnZlclxXaW5TdGF0aW9uc1xSRFAtVGNwJyAtbmFtZSAiVXNlckF1dGhlbnRpY2F0aW9uIiAtVmFsdWUgMSAtRm9yY2U="
 
-# Lệnh 4: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "tsdm215.@" -Force)
-# Bạn có thể thay đổi mật khẩu "tsdm215.@" nếu muốn
-$cmd4 = "U2V0LUxvY2FsVXNlciAtTmFtZSAicnVubmVyYWRtaW4iIC1QYXNzd29yZCAoQ29udmVydFRvLVNlY3VyZVN0cmluZyAtQXNQbGFpbnRleHQgInRzZG0yMTUuQCIgLUZvcmNlKSAtRm9yY2U="
+# Lệnh 4 (ĐÃ SỬA): Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "tsdm215.@" -Force)
+# Lỗi là do có thêm tham số -Force không hợp lệ ở cuối lệnh. Đã xóa nó đi.
+$cmd4 = "U2V0LUxvY2FsVXNlciAtTmFtZSAicnVubmVyYWRtaW4iIC1QYXNzd29yZCAoQ29udmVydFRvLVNlY3VyZVN0cmluZyAtQXNQbGFpbnRleHQgInRzZG0yMTUuQCIgLUZvcmNlKQ=="
 
 # --- Bắt đầu thực thi ---
 
@@ -52,7 +52,7 @@ Invoke-Expression ([System.Text.Encoding]::UTF8.GetString([System.Convert]::From
 # Bắt đầu các dịch vụ nền
 Write-Host "Starting background services..."
 
-# *** FIX v2: Tách đường dẫn và tên ngẫu nhiên để đảm bảo phân tích cú pháp chính xác ***
+# Tách đường dẫn và tên ngẫu nhiên để đảm bảo phân tích cú pháp chính xác
 $runnerName = "CI-Runner-$(Get-Random)"
 $crdExePath = Join-Path ${env:ProgramFiles(x86)} "Google\Chrome Remote Desktop\CurrentVersion\remoting_start_host.exe"
 
