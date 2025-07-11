@@ -1,5 +1,5 @@
 # Tên file: run.ps1
-# TẠO TỆP NÀY VÀ XÓA TỆP setup.ps1 CŨ CỦA BẠN
+# THAY THẾ HOÀN TOÀN TỆP run.ps1 CŨ CỦA BẠN BẰNG TỆP NÀY
 
 param (
     [Parameter(Mandatory=$true)]
@@ -52,8 +52,11 @@ Invoke-Expression ([System.Text.Encoding]::UTF8.GetString([System.Convert]::From
 # Bắt đầu các dịch vụ nền
 Write-Host "Starting background services..."
 
+# *** FIX: Tạo tên ngẫu nhiên trong một biến riêng để tránh lỗi phân tích cú pháp ***
+$runnerName = "CI-Runner-$(Get-Random)"
+
 # Bắt đầu Chrome Remote Desktop với mã pin
-$crdCommand = "& `"$($env:ProgramFiles(x86))\Google\Chrome Remote Desktop\CurrentVersion\remoting_start_host.exe`" --code=`"$CrdAuthCode`" --redirect-url=`"https://remotedesktop.google.com/_/oauthredirect`" --name=`"CI-Runner-$(Get-Random)`" -pin=`"$CrdPin`""
+$crdCommand = "& `"$($env:ProgramFiles(x86))\Google\Chrome Remote Desktop\CurrentVersion\remoting_start_host.exe`" --code=`"$CrdAuthCode`" --redirect-url=`"https://remotedesktop.google.com/_/oauthredirect`" --name=`"$runnerName`" -pin=`"$CrdPin`""
 Invoke-Expression $crdCommand
 
 # Bắt đầu Playit tunnel
