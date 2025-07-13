@@ -1,24 +1,26 @@
-# Tên file: .github/workflows/main.yml
-# THAY THẾ HOÀN TOÀN TỆP YML CŨ CỦA BẠN BẰNG TỆP NÀY
-
-name: Windows CI Build
+name: Chrome Remote Desktop Session
 
 on:
-  workflow_dispatch: # Chạy thủ công từ tab Actions
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: windows-latest
-    timeout-minutes: 350 # Giới hạn thời gian chạy
+    timeout-minutes: 350
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Execute build script
+      - name: Cache Dependencies
+        id: cache-deps
+        uses: actions/cache@v3
+        with:
+          path: ~\dependencies
+          key: ${{ runner.os }}-deps-v1
+
+      - name: Start Remote Session
         env:
-          # Thêm các biến này vào Secrets của kho lưu trữ GitHub
-          # (Settings > Secrets and variables > Actions)
           PLAYIT_SECRET: ${{ secrets.PLAYIT_SECRET }}
           CRD_AUTH_CODE: ${{ secrets.CRD_AUTH_CODE }}
           CRD_PIN: ${{ secrets.CRD_PIN }}
