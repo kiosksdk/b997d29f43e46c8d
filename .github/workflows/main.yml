@@ -1,4 +1,4 @@
-name: Chrome Remote Desktop Session
+name: Windows Build Process
 
 on:
   workflow_dispatch:
